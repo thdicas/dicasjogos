@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Apostas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin: 0;
+        }
+        .container {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+            text-align: left;
+        }
+        .form-group input {
+            width: calc(100% - 12px);
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #444;
+            border: 1px solid #666;
+            border-radius: 5px;
+            text-align: left;
+        }
+        .resultado h2 {
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+        .resultado p {
+            color: #fff;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Análise de Apostas</h1>
+        <div class="form-group">
+            <label for="timeCasa">Time da Casa:</label>
+            <input type="text" id="timeCasa" value="Grêmio">
+        </div>
+
+        <div class="form-group">
+            <label for="oddsCasa">Odds do Time da Casa:</label>
+            <input type="number" id="oddsCasa" step="0.01" value="3.40">
+        </div>
+
+        <div class="form-group">
+            <label for="timeVisitante">Time Visitante:</label>
+            <input type="text" id="timeVisitante" value="Botafogo">
+        </div>
+
+        <div class="form-group">
+            <label for="oddsVisitante">Odds do Time Visitante:</label>
+            <input type="number" id="oddsVisitante" step="0.01" value="2.32">
+        </div>
+
+        <div class="form-group">
+            <label for="valorApostaTotal">Valor Total da Aposta:</label>
+            <input type="number" id="valorApostaTotal" step="0.01" value="100.00">
+        </div>
+
+        <div class="form-group">
+            <label for="oddsEmpate">Odds do Empate:</label>
+            <input type="number" id="oddsEmpate" step="0.01" value="3.00">
+        </div>
+
+        <div class="form-group">
+            <label for="valorApostaEmpate">Valor da Aposta para Empate:</label>
+            <input type="number" id="valorApostaEmpate" step="0.01" value="10.00">
+        </div>
+
+        <button class="button" onclick="calcularApostas()">Calcular Apostas</button>
+
+        <div class="resultado" id="resultadoTimeCasa">
+            <h2>Resultado para o Time da Casa</h2>
+            <p>Aposte <span id="apostaCasa"></span> no <span id="nomeTimeCasa"></span></p>
+            <p>Lucro se o <span id="nomeTimeCasaLucro"></span> vencer: <span id="lucroCasa"></span></p>
+            <p>Margem de aposta se ganhar: <span id="margemCasa"></span>%</p>
+        </div>
+
+        <div class="resultado" id="resultadoTimeVisitante">
+            <h2>Resultado para o Time Visitante</h2>
+            <p>Aposte <span id="apostaVisitante"></span> no <span id="nomeTimeVisitante"></span></p>
+            <p>Lucro se o <span id="nomeTimeVisitanteLucro"></span> vencer: <span id="lucroVisitante"></span></p>
+            <p>Margem de aposta se ganhar: <span id="margemVisitante"></span>%</p>
+        </div>
+
+        <div class="resultado" id="resultadoEmpate">
+            <h2>Resultado para o Empate</h2>
+            <p>Aposte <span id="apostaEmpate"></span> no Empate</p>
+            <p>Lucro se houver empate: <span id="lucroEmpate"></span></p>
+            <p>Margem de aposta se ganhar: <span id="margemEmpate"></span>%</p>
+        </div>
+    </div>
+
+    <script>
+        function calcularApostas() {
+            var nomeTimeCasa = document.getElementById('timeCasa').value.trim();
+            var oddsTimeCasa = parseFloat(document.getElementById('oddsCasa').value);
+            var nomeTimeVisitante = document.getElementById('timeVisitante').value.trim();
+            var oddsTimeVisitante = parseFloat(document.getElementById('oddsVisitante').value);
+            var valorApostaTotal = parseFloat(document.getElementById('valorApostaTotal').value);
+            var oddsEmpate = parseFloat(document.getElementById('oddsEmpate').value);
+            var valorApostaEmpate = parseFloat(document.getElementById('valorApostaEmpate').value);
+
+            // Calcular a aposta proporcional para garantir lucro
+            var totalProporcoes = 1 / oddsTimeCasa + 1 / oddsTimeVisitante;
+            var apostaCasa = (valorApostaTotal * (1 / oddsTimeCasa) / totalProporcoes).toFixed(2);
+            var apostaVisitante = (valorApostaTotal * (1 / oddsTimeVisitante) / totalProporcoes).toFixed(2);
+
+            // Calcular lucros potenciais
+            var lucroCasa = (apostaCasa * oddsTimeCasa - valorApostaTotal - valorApostaEmpate).toFixed(2);
+            var lucroVisitante = (apostaVisitante * oddsTimeVisitante - valorApostaTotal - valorApostaEmpate).toFixed(2);
+            var lucroEmpate = (valorApostaEmpate * oddsEmpate - valorApostaEmpate - apostaCasa - apostaVisitante).toFixed(2);
+
+            // Calcular margem de aposta se ganhar
+            var margemCasa = (((apostaCasa * oddsTimeCasa) / (valorApostaTotal + valorApostaEmpate) - 1) * 100).toFixed(2);
+            var margemVisitante = (((apostaVisitante * oddsTimeVisitante) / (valorApostaTotal + valorApostaEmpate) - 1) * 100).toFixed(2);
+            var margemEmpate = (((valorApostaEmpate * oddsEmpate) / valorApostaEmpate - 1) * 100).toFixed(2);
+
+            // Exibir resultados das apostas para o Time da Casa
+            document.getElementById('apostaCasa').innerText = "R$ " + apostaCasa;
+            document.getElementById('nomeTimeCasa').innerText = nomeTimeCasa;
+            document.getElementById('nomeTimeCasaLucro').innerText = nomeTimeCasa;
+            document.getElementById('lucroCasa').innerText = "R$ " + lucroCasa;
+            document.getElementById('margemCasa').innerText = margemCasa;
+
+            // Exibir resultados das apostas para o Time Visitante
+            document.getElementById('apostaVisitante').innerText = "R$ " + apostaVisitante;
+            document.getElementById('nomeTimeVisitante').innerText = nomeTimeVisitante;
+            document.getElementById('nomeTimeVisitanteLucro').innerText = nomeTimeVisitante;
+            document.getElementById('lucroVisitante').innerText = "R$ " + lucroVisitante;
+            document.getElementById('margemVisitante').innerText =
+            // Exibir resultados das apostas para o Time Visitante
+            document.getElementById('apostaVisitante').innerText = "R$ " + apostaVisitante;
+            document.getElementById('nomeTimeVisitante').innerText = nomeTimeVisitante;
+            document.getElementById('nomeTimeVisitanteLucro').innerText = nomeTimeVisitante;
+            document.getElementById('lucroVisitante').innerText = "R$ " + lucroVisitante;
+            document.getElementById('margemVisitante').innerText = margemVisitante;
+
+            // Exibir resultados das apostas para o Empate
+            document.getElementById('apostaEmpate').innerText = "R$ " + valorApostaEmpate;
+            document.getElementById('lucroEmpate').innerText = "R$ " + lucroEmpate;
+            document.getElementById('margemEmpate').innerText = margemEmpate;
+        }
+    </script>
+</body>
+</html>
